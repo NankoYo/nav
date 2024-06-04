@@ -9,7 +9,7 @@
     "type": "git",
     "url": "git+https://github.com/xjh22222228/nav.git"
   },
-  "homepage": "https://github.com/xjh22222228/nav",
+  "homepage": "https://github.com/NanKoYo-Inc",
   "scripts": {
     "ng": "ng",
     "start": "npm run build-internal && ng serve --port=7001",
