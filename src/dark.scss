@@ -23,8 +23,12 @@
     }
     &-hover {
       &:hover {
-        background-color: #0d1117 !important;
         background-color: #21262d !important;
+      }
+    }
+    &-hover-text {
+      &:hover {
+        color: #fff !important;
       }
     }
 
@@ -68,7 +72,7 @@
     &-scrollbar {
       &::-webkit-scrollbar {
         width: 12px;
-        height: 5px;
+        height: 12px;
         background-color: rgb(39, 39, 39);
       }
       &::-webkit-scrollbar-thumb {

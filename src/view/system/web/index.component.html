@@ -99,7 +99,7 @@
                 nzTheme="outline"
               ></i>
             </td>
-            <td>{{ formatDate(data.createdAt) }}</td>
+            <td>{{ data.createdAt }}</td>
             <td>
               <a (click)="handleEditBtn(data, idx)">{{ $t('_edit') }}</a>
               <a
@@ -195,7 +195,7 @@
                 nzTheme="outline"
               ></i>
             </td>
-            <td>{{ formatDate(data.createdAt) }}</td>
+            <td>{{ data.createdAt }}</td>
             <td>
               <a (click)="handleEditBtn(data, idx)">{{ $t('_edit') }}</a>
               <a
@@ -306,7 +306,7 @@
                 nzTheme="outline"
               ></i>
             </td>
-            <td>{{ formatDate(data.createdAt) }}</td>
+            <td>{{ data.createdAt }}</td>
             <td>
               <a (click)="handleEditBtn(data, idx)">{{ $t('_edit') }}</a>
               <a
@@ -372,7 +372,7 @@
       <button
         nz-button
         nzType="primary"
-        (click)="toggleCreateWebModal()"
+        (click)="openCreateWebModal()"
         style="margin-left: 20px"
       >
         {{ $t('_addWeb') }}
@@ -415,7 +415,7 @@
               [nzChecked]="checkedAll"
               (nzCheckedChange)="onAllChecked($event, 4)"
             ></th>
-            <th nzWidth="60px" class="text-center">{{ $t('_action') }}</th>
+            <th nzWidth="60px" class="center">{{ $t('_action') }}</th>
             <th nzWidth="70px">状态</th>
             <th nzWidth="80px">{{ $t('_icon') }}</th>
             <th nzWidth="100px">{{ $t('_webName') }}</th>
@@ -432,8 +432,11 @@
               [nzChecked]="setOfCheckedId.has(data.name)"
               (nzCheckedChange)="onItemChecked(data.name, $event)"
             ></td>
-            <td class="text-center">
+            <td class="center">
               <a (click)="openEditModal(data)">{{ $t('_edit') }}</a>
+              <div>
+                <a (click)="openMoveWebModal(data, idx)">{{ $t('_move') }}</a>
+              </div>
               <a
                 nz-popconfirm
                 [nzPopconfirmTitle]="$t('_confirmDel')"
@@ -462,13 +465,13 @@
             <td>
               <nz-tag
                 *ngFor="let key of objectKeys(data.urls || {})"
-                [nzColor]="tagMap[key].color || '#2db7f5'"
+                [nzColor]="(tagMap[key] && tagMap[key].color) || '#1890ff'"
                 style="margin-bottom: 5px"
               >
                 <a
                   [href]="data.urls?.[key] || 'javascript:void(0)'"
                   [target]="data.urls?.[key] ? '_blank' : ''"
-                  >{{ key }}</a
+                  >{{ tagMap[key] && tagMap[key].name }}</a
                 >
               </nz-tag>
             </td>
@@ -484,21 +487,13 @@
               <pre class="desc">{{ data.desc }}</pre>
             </td>
             <th nzWidth="300px">{{ data.breadcrumb }}</th>
-            <td>{{ formatDate(data.createdAt) }}</td>
+            <td>{{ data.createdAt }}</td>
           </tr>
         </tbody>
       </nz-table>
     </nz-tab>
   </nz-tabset>
 </div>
-
-<app-create-web
-  [visible]="showCreateWebModal"
-  (onCancel)="showCreateWebModal = false"
-  (onOk)="onOkCreateWeb($event)"
-  [detail]="websiteDetail"
->
-</app-create-web>
 
 <nz-modal
   [(nzVisible)]="showCreateModal"
@@ -509,9 +504,7 @@
   <ng-container *nzModalContent>
     <form nz-form [formGroup]="validateForm">
       <nz-form-item>
-        <nz-form-label [nzSpan]="6" nzRequired>{{
-          $t('_tagName')
-        }}</nz-form-label>
+        <nz-form-label [nzSpan]="6" nzRequired>分类名称</nz-form-label>
         <nz-form-control [nzSpan]="18" [nzErrorTip]="$t('_requiredName')">
           <input
             formControlName="title"

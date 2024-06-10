@@ -17,6 +17,8 @@ import { NzMessageService } from 'ng-zorro-antd/message'
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  isLogin: boolean = !!getToken()
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -48,7 +50,7 @@ export class AppComponent {
 
   goRoute() {
     // is App
-    if ('ontouchstart' in window) {
+    if (settings.appTheme !== 'Current' && 'ontouchstart' in window) {
       const url = (this.router.url.split('?')[0] || '').toLowerCase()
       const { page, id, q } = queryString()
       const queryParams = { page, id, q }

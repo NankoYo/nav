@@ -3,14 +3,74 @@
 
 import fs from 'fs'
 import path from 'path'
+import dayjs from 'dayjs'
 
 const dbPath = path.join('.', 'data', 'db.json')
 const internalPath = path.join('.', 'data', 'internal.json')
 const settingsPath = path.join('.', 'data', 'settings.json')
+const tagPath = path.join('.', 'data', 'tag.json')
 
-const internal = JSON.parse(fs.readFileSync(internalPath).toString())
-const db = JSON.parse(fs.readFileSync(dbPath).toString())
-const settings = JSON.parse(fs.readFileSync(settingsPath).toString())
+let internal, db, settings, tags
+try {
+  internal = JSON.parse(fs.readFileSync(internalPath).toString())
+  db = JSON.parse(fs.readFileSync(dbPath).toString())
+  settings = JSON.parse(fs.readFileSync(settingsPath).toString())
+  tags = JSON.parse(fs.readFileSync(tagPath).toString())
+} catch (error) {
+  internal = {}
+  db = []
+  settings = {}
+  tags = []
+}
+
+const TAG_ID1 = -1
+const TAG_ID2 = -2
+const TAG_ID3 = -3
+const TAG_ID_NAME1 = '中文'
+const TAG_ID_NAME2 = '英文'
+const TAG_ID_NAME3 = 'Github'
+{
+  if (!Array.isArray(tags)) {
+    tags = []
+  }
+  const a = tags.some((item) => item.id === TAG_ID1)
+  if (!a) {
+    tags.push({
+      id: TAG_ID1,
+      name: '中文',
+      color: '#2db7f5',
+      createdAt: '',
+      desc: '系统内置不可删除',
+      isInner: true,
+    })
+  }
+  const b = tags.some((item) => item.id === TAG_ID2)
+  if (!b) {
+    tags.push({
+      id: TAG_ID2,
+      name: '英文',
+      color: '#f50',
+      createdAt: '',
+      desc: '系统内置不可删除',
+      isInner: true,
+    })
+  }
+  const c = tags.some((item) => item.id === TAG_ID3)
+  if (!c) {
+    tags.push({
+      id: TAG_ID3,
+      name: 'Github',
+      color: '#108ee9',
+      createdAt: '',
+      desc: '系统内置不可删除',
+      isInner: true,
+    })
+  }
+  tags = tags.filter((item) => item.name && item.id)
+  fs.writeFileSync(tagPath, JSON.stringify(tags), {
+    encoding: 'utf-8',
+  })
+}
 
 {
   const banner1 =
@@ -33,7 +93,9 @@ const settings = JSON.parse(fs.readFileSync(settingsPath).toString())
   settings.keywords ??=
     '导航,前端资源,社区站点,设计师,实用工具,学习资源,运营,网络安全,node.js'
   settings.theme ??= 'Light'
+  settings.actionUrl ??= ''
   settings.appTheme ??= 'App'
+  settings.openSEO ??= true
   settings.headerContent ??= ''
   settings.footerContent ??=
     '<div style="font-weight: bold;">共收录${total}个网站</div><div>Copyright © 2018-present nav3.cn, All Rights Reserved</div>'
@@ -42,6 +104,7 @@ const settings = JSON.parse(fs.readFileSync(settingsPath).toString())
   settings.cnzzStatisticsUrl ??= ''
   settings.showThemeToggle ??= true
   settings.lightCardStyle ||= 'standard'
+  settings.lightOverType ||= 'overflow'
   settings.simThemeImages ||= [
     {
       src: banner1,
@@ -59,11 +122,12 @@ const settings = JSON.parse(fs.readFileSync(settingsPath).toString())
   settings.simThemeDesc ||=
     '这里收录多达 <b>${total}</b> 个优质网站， 助您工作、学习和生活'
   settings.simCardStyle ||= 'standard'
-  settings.simCardStyle ||= 'standard'
-  settings.simThemeHeight ??= 350
+  settings.simOverType ||= 'overflow'
+  settings.simThemeHeight ??= 0
   settings.simThemeAutoplay ??= true
   settings.simTitle ||= ''
   settings.superCardStyle ||= 'column'
+  settings.superOverType ||= 'overflow'
   // 更名
   if (settings.superCardStyle === 'super') {
     settings.superCardStyle = 'column'
@@ -79,12 +143,16 @@ const settings = JSON.parse(fs.readFileSync(settingsPath).toString())
     },
   ]
   settings.superImages ??= defImgs
+  settings.lightImages ??= defImgs
   if (!Array.isArray(settings.superImages)) {
     settings.superImages = defImgs
   }
+  if (!Array.isArray(settings.lightImages)) {
+    settings.lightImages = defImgs
+  }
   settings.sideTitle ||= ''
   settings.sideCardStyle ||= 'example'
-  settings.sideThemeHeight ??= 350
+  settings.sideThemeHeight ??= 0
   settings.sideThemeAutoplay ??= true
   settings.sideThemeImages ||= [
     {
@@ -100,6 +168,7 @@ const settings = JSON.parse(fs.readFileSync(settingsPath).toString())
       height: null,
     },
   ]
+  settings.shortcutTitle ??= ''
   settings.shortcutThemeShowWeather ??= true
   settings.shortcutThemeImages ??= [
     {
@@ -171,6 +240,7 @@ loginViewCount: ${internal.loginViewCount}
 fs.writeFileSync(internalPath, JSON.stringify(internal), { encoding: 'utf-8' })
 
 // 设置网站的面包屑类目显示
+let id = 0 // 为每个网站设置唯一ID
 function setWeb(nav) {
   if (!Array.isArray(nav)) return
 
@@ -180,31 +250,65 @@ function setWeb(nav) {
     }
   }
 
+  function formatDate(item) {
+    item.createdAt ||= Date.now()
+    item.createdAt = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')
+  }
+
   for (let i = 0; i < nav.length; i++) {
     const item = nav[i]
     removeIconFont(item)
+    formatDate(item)
     if (item.nav) {
       for (let j = 0; j < item.nav.length; j++) {
         const navItem = item.nav[j]
         removeIconFont(navItem)
+        formatDate(navItem)
         if (navItem.nav) {
           for (let k = 0; k < navItem.nav.length; k++) {
             const navItemItem = navItem.nav[k]
             removeIconFont(navItemItem)
+            formatDate(navItemItem)
             if (navItemItem.nav) {
               for (let l = 0; l < navItemItem.nav.length; l++) {
                 let breadcrumb = []
-                const navItemItemItem = navItemItem.nav[l]
+                const webItem = navItemItem.nav[l]
+                formatDate(webItem)
                 breadcrumb.push(item.title, navItem.title, navItemItem.title)
                 breadcrumb = breadcrumb.filter(Boolean)
-                navItemItemItem.breadcrumb = breadcrumb
+                webItem.breadcrumb = breadcrumb
+                webItem.id = id += 1
+
+                // 网站没有图标 设置为父级图标
+                if (!webItem.icon && typeof navItemItem?.icon === 'string') {
+                  webItem.icon = navItemItem.icon
+                }
 
                 // 新字段补充
-                navItemItemItem.urls ||= {}
-                navItemItemItem.rate ??= 5
-                navItemItemItem.top ??= false
-                navItemItemItem.ownVisible ??= false
-                navItemItemItem.desc ||= ''
+                webItem.urls ||= {}
+                webItem.rate ??= 5
+                webItem.top ??= false
+                webItem.ownVisible ??= false
+                webItem.desc ||= ''
+
+                delete webItem.__desc__
+                delete webItem.__name__
+
+                // 兼容现有标签,以id为key
+                for (let k in webItem.urls) {
+                  if (k === TAG_ID_NAME1) {
+                    webItem.urls[TAG_ID1] = webItem.urls[k]
+                    delete webItem.urls[TAG_ID_NAME1]
+                  }
+                  if (k === TAG_ID_NAME2) {
+                    webItem.urls[TAG_ID2] = webItem.urls[k]
+                    delete webItem.urls[TAG_ID_NAME2]
+                  }
+                  if (k === TAG_ID_NAME3) {
+                    webItem.urls[TAG_ID3] = webItem.urls[k]
+                    delete webItem.urls[TAG_ID_NAME3]
+                  }
+                }
               }
             }
           }

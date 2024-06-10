@@ -22,10 +22,8 @@
 
 ## 预览
 
-**备用域名**
-
 - [https://nav3.cn/](https://nav3.cn/)
-- [https://nav-web-two.vercel.app/](https://nav-web-two.vercel.app/)
+- [https://faxian.vercel.app/](https://faxian.vercel.app/)
 - [https://xjh22222228.github.io/nav-web/](https://xjh22222228.github.io/nav-web/)
 
 ![Preview](https://cdn.jsdelivr.net/gh/xjh22222228/public@gh-pages/nav/1.png)
@@ -40,9 +38,10 @@
 
 `发现导航` 的理念就是做一款无需依赖后端服务既简单又方便，没有繁杂的配置和数据库等配置概念, 做到开箱即用。
 
-- 🍰 内置 `800+` 实用网站。
+- 🍰 内置 `800+` 优质网站。
 - 🍰 支持 [码云 Gitee](https://gitee.com/xiejiahe/nav)
-- 🍰 支持 SEO。
+- 🍰 丰富的资源配置系统
+- 🍰 支持 SEO 搜索引擎。
 - 🍰 完全纯静态, 提供自动化部署功能。
 - 🍰 三叉树分类、结构清晰、分类清晰。
 - 🍰 支持一个网站关联多个网址
@@ -51,20 +50,27 @@
 - 🍰 支持多种浏览模式，创新。
 - 🍰 支持足迹记忆。
 - 🍰 支持移动端浏览。
-- 🍰 支持搜索查询。
+- 🍰 支持多种搜索查询。
 - 🍰 支持自定义引擎搜索。
-- 🍰 多款主题切换。
+- 🍰 多款高颜值主题切换。
 - 🍰 支持暗黑模式。
 - 🍰 支持后台管理, 无需部署。
 - 🍰 支持从 Chrome 书签导入
 - 🍰 多种 Loading 加载动画
-- 🍰 多种 卡片风格
+- 🍰 多种卡片风格设计
 - 🍰 支持检测网站存活状态
 - 🍰 支持配置仅自己可见
+- 🍰 响应式系统
+
+## 可以干嘛
+
+- 公司部署，内部系统网站，不需要员工收藏各种链接
+- 做为个人书签，有些功能浏览器是没有的
+- 个人导航网站，分享、价值、发现
 
 ## 部署
 
-像数 `321` 一样简单。
+零成本部署，像数 `321` 一样简单。
 
 #### gh-pages (免费)
 
@@ -96,13 +102,17 @@
 
 如果你想部署到自己的服务器，你需要在后台配置补充`请求地址`当每次发生保存时会请求 GET，你需要使用熟悉的任何编程语言写一个服务执行 `git pull && npm run build` 用服务器指向导出的`dist`目录
 
+#### 其他
+
+如果您有更好的部署方式，请给我们提 PR
+
 ## 后台
 
 将路由地址修改为 `system` 即可进入，如: https://www.nav3.cn/#/light 修改为 https://www.nav3.cn/#/system
 
 ## 书签导入
 
-支持从 Chrome 书签导入（WebKit 内核应该都是支持的~），会自动检测满足三级分类的导航，其他一律设为未分类：
+自动检测满足三级分类导航，其他一律设为未分类：
 
 ![](https://raw.githubusercontent.com/xjh22222228/public/gh-pages/nav/import.png)
 
@@ -120,7 +130,7 @@ git merge upstream/main --allow-unrelated-histories
 git push
 
 # 或者执行
-npm run fetch
+npm run update
 ```
 
 ## 更新日志

@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { FormsModule } from '@angular/forms'
-import { HttpClientModule } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { NzModalModule } from 'ng-zorro-antd/modal'
@@ -52,11 +51,12 @@ import { ToolbarTitleWebComponent } from '../components/toolbar-title/index.comp
 import { WebListComponent } from '../components/web-list/index.component'
 import { LogoComponent } from '../components/logo/logo.component'
 import { CardComponent } from '../components/card/index.component'
-import { MoveSiteComponent } from '../components/move-site/index.component'
+import { MoveWebComponent } from '../components/move-web/index.component'
+import { WebMoreMenuComponent } from '../components/web-more-menu/index.component'
 
-import LightComponent from '../view/index/light/index.component'
-import SuperComponent from '../view/index/super/index.component'
-import SimComponent from '../view/index/sim/index.component'
+import LightComponent from '../view/light/index.component'
+import SuperComponent from '../view/super/index.component'
+import SimComponent from '../view/sim/index.component'
 import SystemComponent from '../view/system/index.component'
 import SystemInfoComponent from '../view/system/info/index.component'
 import SystemBookmarkComponent from '../view/system/bookmark/index.component'
@@ -66,8 +66,8 @@ import SystemSearchComponent from '../view/system/search/index.component'
 import SystemSettingComponent from '../view/system/setting/index.component'
 import SystemWebComponent from '../view/system/web/index.component'
 import SystemAngleMarkComponent from '../view/system/angle-mark/index.component'
-import SideComponent from '../view/index/side/index.component'
-import ShortcutComponent from '../view/index/shortcut/index.component'
+import SideComponent from '../view/side/index.component'
+import ShortcutComponent from '../view/shortcut/index.component'
 import WebpComponent from '../view/app/default/app.component'
 
 import {
@@ -123,11 +123,11 @@ const icons: IconDefinition[] = [
     WebListComponent,
     LogoComponent,
     CardComponent,
-    MoveSiteComponent,
+    MoveWebComponent,
+    WebMoreMenuComponent,
   ],
   imports: [
     BrowserAnimationsModule,
-    HttpClientModule,
     NzModalModule,
     NzInputModule,
     NzRadioModule,

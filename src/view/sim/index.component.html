@@ -1,0 +1,118 @@
+<div class="sim">
+  <div class="wallpaper" *ngIf="settings.simThemeImages.length > 0">
+    <app-swiper
+      [images]="settings.simThemeImages"
+      [autoplay]="settings.simThemeAutoplay"
+      [height]="settings.simThemeHeight"
+    >
+      <div class="bar">
+        <h1 class="title dark-white">
+          {{ settings.simTitle || settings.title }}
+        </h1>
+        <pre class="description dark-white" [innerHTML]="description"></pre>
+        <app-search-engine />
+      </div>
+    </app-swiper>
+  </div>
+
+  <app-search-engine class="hidden search-sm" />
+
+  <nav class="top-nav dark-border-color dark-scrollbar dark-bg">
+    <span
+      *ngFor="
+        let item of websiteList.slice(0, overIndex);
+        let i = index;
+        trackBy: trackByItem
+      "
+      [class.active]="page === i"
+      [class.dark-text-active]="page === i"
+      class="over-item dark-text"
+      (click)="handleCilckTopNav(i)"
+    >
+      {{ item.title }}
+    </span>
+    <!-- More -->
+    <app-web-more-menu
+      *ngIf="overIndex < websiteList.length"
+      [data]="websiteList.slice(overIndex, 9999)"
+      [index]="overIndex"
+      [page]="page"
+      (onClick)="handleCilckTopNav($event)"
+    />
+  </nav>
+
+  <div class="wrapper">
+    <nav
+      class="sidebar dark-bg"
+      id="sidebar"
+      *ngIf="websiteList[page]?.nav?.length"
+    >
+      <div
+        *ngFor="
+          let item of websiteList[page].nav;
+          let i = index;
+          trackBy: trackByItem
+        "
+        (click)="handleSidebarNav(i)"
+        [class.active]="id === i"
+        [class.dark-item-active]="id === i"
+        class="ripple-btn dark-text dark-hover"
+      >
+        {{ item.title }}
+      </div>
+    </nav>
+
+    <aside class="site-box dark-bg">
+      <div *ngIf="currentList.length > 0; else noData">
+        <div
+          *ngFor="
+            let item of currentList.slice(0, sliceMax);
+            let i = index;
+            trackBy: trackByItem
+          "
+        >
+          <div class="nav-wrapper">
+            <app-toolbar-title
+              [dataSource]="item"
+              (onCollapse)="onCollapse(item, i)"
+              [index]="i"
+            ></app-toolbar-title>
+
+            <div
+              nz-row
+              [nzGutter]="[16, 16]"
+              [style.display]="item.collapsed ? 'none' : ''"
+            >
+              <div
+                class="gutter-row"
+                nz-col
+                [nzSpan]="8"
+                [nzSm]="12"
+                [nzMd]="12"
+                [nzLg]="8"
+                [nzXs]="24"
+                *ngFor="let el of item.nav; index as j; trackBy: trackByItemWeb"
+              >
+                <app-card
+                  [cardStyle]="'example'"
+                  [dataSource]="el"
+                  [indexs]="[page, id, i, j]"
+                ></app-card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noData>
+        <app-no-data></app-no-data>
+      </ng-template>
+    </aside>
+  </div>
+</div>
+
+<app-footer className="sim-footer"></app-footer>
+<app-fixbar (onCollapse)="onCollapseAll()" [collapsed]="collapsed()">
+</app-fixbar>
+
+<div class="sim-bg dark-bg"></div>

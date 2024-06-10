@@ -6,6 +6,7 @@ import config from '../nav.config.js'
 import path from 'path'
 import LOAD_MAP from './loading.js'
 import axios from 'axios'
+import dayjs from 'dayjs'
 
 const dbPath = path.join('.', 'data', 'db.json')
 const setPath = path.join('.', 'data', 'settings.json')
@@ -15,28 +16,10 @@ const db = JSON.parse(fs.readFileSync(dbPath).toString())
 const pkg = JSON.parse(fs.readFileSync(pkgPath).toString())
 const settings = JSON.parse(fs.readFileSync(setPath).toString())
 
-function addZero(num) {
-  return num < 10 ? '0' + num : num
-}
+const nowDate = dayjs().format('YYYY-MM-DD HH:mm:ss')
 
-const now = new Date()
-now.setHours(now.getHours() + 8)
-const date = `${now.getFullYear()}年${addZero(now.getMonth() + 1)}月${addZero(
-  now.getDate()
-)}日 ${addZero(now.getHours())}:${addZero(now.getMinutes())}:${addZero(
-  now.getSeconds()
-)}`
-
-const {
-  description,
-  title,
-  keywords,
-  baiduStatisticsUrl,
-  cnzzStatisticsUrl,
-  loading,
-  favicon,
-  headerContent,
-} = settings
+const { description, title, keywords, loading, favicon, headerContent } =
+  settings
 
 const { gitRepoUrl, homeUrl } = config.default
 
@@ -54,30 +37,10 @@ const htmlTemplate = `
   <link rel ="apple-touch-icon" href="${favicon}">
 `.trim()
 
-const cnzzScript = !cnzzStatisticsUrl
-  ? ''
-  : `<script src="${cnzzStatisticsUrl}"></script>`
-const baiduScript = !baiduStatisticsUrl
-  ? ''
-  : `
-<script>
-var _hmt = _hmt || [];
-var hm = document.createElement('script');
-hm.async = true;
-hm.src = '${baiduStatisticsUrl}';
-var s = document.getElementsByTagName("script")[0]; 
-s.parentNode.insertBefore(hm, s);
-</script>
-`
-
-let scriptTemplate = `
-${baiduScript}
-${cnzzScript}
-<span style="display:none;" data-date="${date}" data-version="${pkg.version}" id="META-NAV"></span>
-`.trim()
+let scriptTemplate = ``.trim()
 
 let seoTemplate = `
-<div data-url="https://github.com/xjh22222228/nav" style="z-index:-1;position:fixed;top:-10000vh;left:-10000vh;">
+<div data-url="https://github.com/xjh22222228/nav" data-date="${nowDate}" data-version="${pkg.version}" id="META-NAV" style="z-index:-1;position:fixed;top:-10000vh;left:-10000vh;">
 `
 
 async function buildSeo() {
@@ -103,13 +66,16 @@ async function buildSeo() {
     }
   }
 
-  r(db)
+  if (settings.openSEO) {
+    r(db)
+  }
 
   seoTemplate += '</div>'
 }
 
 async function build() {
-  const htmlPath = path.join('.', 'src', 'index.html')
+  const htmlPath = path.join('.', 'src', 'main.html')
+  const writePath = path.join('.', 'src', 'index.html')
   let t = fs.readFileSync(htmlPath).toString()
   t = t.replace(/<title>.*<\/title>/i, '')
   t = t.replace('<link rel="icon" href="assets/logo.png" />', '')
@@ -118,14 +84,12 @@ async function build() {
     t = t.replace('<!-- nav.headerContent -->', headerContent)
   }
 
-  if (baiduStatisticsUrl) {
-    t = t.replace('<!-- nav.script -->', scriptTemplate)
-  }
+  t = t.replace('<!-- nav.script -->', scriptTemplate)
 
   t = t.replace('<!-- nav.seo -->', seoTemplate)
   t = t.replace('<!-- nav.loading -->', LOAD_MAP[getLoadKey()] || '')
 
-  fs.writeFileSync(htmlPath, t, { encoding: 'utf-8' })
+  fs.writeFileSync(writePath, t, { encoding: 'utf-8' })
   fs.unlinkSync('./nav.config.js')
   console.log('Config build done!')
 }

@@ -1,20 +1,19 @@
-// @ts-nocheck
 // Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
 // See https://github.com/xjh22222228/nav
 
 import qs from 'qs'
 import Clipboard from 'clipboard'
 import {
-  INavFourProp,
+  IWebProps,
   INavThreeProp,
   INavProps,
   ISearchEngineProps,
 } from '../types'
 import * as db from '../../data/db.json'
 import * as s from '../../data/search.json'
-import { STORAGE_KEY_MAP } from '../constants'
+import { STORAGE_KEY_MAP } from 'src/constants'
 import { isLogin } from './user'
-import { SearchType } from '../components/search-engine/index'
+import { SearchType } from 'src/components/search-engine/index'
 
 export const websiteList: INavProps[] = getWebsiteList()
 
@@ -34,9 +33,9 @@ export function fuzzySearch(
 
   const { type, page, id } = queryString()
   const sType = Number(type) || SearchType.Title
-  const navData = []
-  const resultList = [{ nav: navData }]
-  const urlRecordMap = {}
+  const navData: IWebProps[] = []
+  const resultList: INavThreeProp[] = [{ nav: navData }]
+  const urlRecordMap: Record<string, any> = {}
 
   function f(arr?: any[]) {
     arr = arr || navList
@@ -54,7 +53,7 @@ export function fuzzySearch(
         const desc = item.desc.toLowerCase()
         const url = item.url.toLowerCase()
         const search = keyword.toLowerCase()
-        const urls = Object.values(item.urls || {})
+        const urls: string[] = Object.values(item.urls || {})
 
         function searchTitle(): boolean {
           if (name.includes(search)) {
@@ -154,21 +153,25 @@ function randomColor(): string {
   return c.slice(0, 7)
 }
 
-let randomTimer: NodeJS.Timer
+let randomTimer: any
 export function randomBgImg() {
   if (isDark()) return
 
   clearInterval(randomTimer)
-
-  const el = document.createElement('div')
+  const id = 'random-light-bg'
+  const el = document.getElementById(id) || document.createElement('div')
   const deg = randomInt(360)
-  el.id = 'random-light-bg'
+  el.id = id
   el.style.cssText =
     'position:fixed;top:0;left:0;right:0;bottom:0;z-index:-3;transition: 1s linear;'
   el.style.backgroundImage = `linear-gradient(${deg}deg, ${randomColor()} 0%, ${randomColor()} 100%)`
   document.body.appendChild(el)
 
   function setBg() {
+    if (isDark()) {
+      clearInterval(randomTimer)
+      return
+    }
     const randomBg = `linear-gradient(${deg}deg, ${randomColor()} 0%, ${randomColor()} 100%)`
     el.style.opacity = '.3'
     setTimeout(() => {
@@ -223,9 +226,9 @@ export function queryString(): {
   }
 }
 
-export function adapterWebsiteList(websiteList: any[], parentItem?: any) {
+export function adapterWebsiteList(websiteList: any[]) {
   const createdAt = new Date().toISOString()
-  function filterOwn(item) {
+  function filterOwn(item: IWebProps) {
     if (item.ownVisible && !isLogin) {
       return false
     }
@@ -238,14 +241,7 @@ export function adapterWebsiteList(websiteList: any[], parentItem?: any) {
 
     if (Array.isArray(item.nav)) {
       item.nav = item.nav.filter(filterOwn)
-      adapterWebsiteList(item.nav, item)
-    }
-
-    // Four
-    if (item.url) {
-      if (!item.icon && parentItem?.icon) {
-        item.icon = parentItem.icon
-      }
+      adapterWebsiteList(item.nav)
     }
   }
 
@@ -263,7 +259,7 @@ export function getWebsiteList(): INavProps[] {
     const whiteList = [STORAGE_KEY_MAP.token, STORAGE_KEY_MAP.isDark]
     const len = window.localStorage.length
     for (let i = 0; i < len; i++) {
-      const key = window.localStorage.key(i)
+      const key = window.localStorage.key(i) as string
       if (whiteList.includes(key)) {
         continue
       }
@@ -274,7 +270,7 @@ export function getWebsiteList(): INavProps[] {
   }
 
   try {
-    const w = window.localStorage.getItem(STORAGE_KEY_MAP.website)
+    const w: any = window.localStorage.getItem(STORAGE_KEY_MAP.website)
     const json = JSON.parse(w)
     if (Array.isArray(json)) {
       webSiteList = json
@@ -438,17 +434,12 @@ export async function isValidImg(url: string): Promise<boolean> {
   })
 }
 
-export function deleteByWeb(data: INavFourProp) {
+export function deleteByWeb(data: IWebProps) {
   function f(arr: any[]) {
     for (let i = 0; i < arr.length; i++) {
       const item = arr[i]
       if (item.name) {
-        if (
-          item.name === data.name &&
-          item.desc === data.desc &&
-          item.top === data.top &&
-          item.createdAt === data.createdAt
-        ) {
+        if (item.id === data.id) {
           arr.splice(i, 1)
           const { q } = queryString()
           q && window.location.reload()
@@ -467,21 +458,17 @@ export function deleteByWeb(data: INavFourProp) {
   setWebsiteList(websiteList)
 }
 
-export function updateByWeb(prevData: INavFourProp, nextData: INavFourProp) {
-  const keys = Object.keys(nextData)
-
+export function updateByWeb(oldData: IWebProps, newData: IWebProps) {
+  const keys = Object.keys(newData)
+  let ok = false
   function f(arr: any[]) {
     for (let i = 0; i < arr.length; i++) {
       const item = arr[i]
       if (item.name) {
-        if (
-          item.name === prevData.name &&
-          item.desc === prevData.desc &&
-          item.top === prevData.top &&
-          item.createdAt === prevData.createdAt
-        ) {
+        if (item.id === oldData.id) {
+          ok = true
           for (let k of keys) {
-            item[k] = nextData[k]
+            item[k] = newData[k]
           }
           break
         }
@@ -496,6 +483,7 @@ export function updateByWeb(prevData: INavFourProp, nextData: INavFourProp) {
 
   f(websiteList)
   setWebsiteList(websiteList)
+  return ok
 }
 
 // value 可能含有标签元素，用于过滤掉标签获取纯文字
@@ -508,7 +496,7 @@ export function getTextContent(value: string): string {
 
 export function matchCurrentList(): INavThreeProp[] {
   const { id, page } = queryString()
-  let data = []
+  let data: INavThreeProp[] = []
 
   try {
     if (
@@ -527,6 +515,27 @@ export function matchCurrentList(): INavThreeProp[] {
   return data
 }
 
-export function addZero(n: number): string {
+export function addZero(n: number): string | number {
   return n < 10 ? `0${n}` : n
+}
+
+// 获取第几个元素超出父节点宽度
+export function getOverIndex(selector: string): number {
+  const els = document.querySelectorAll(selector)
+  let overIndex = Number.MAX_SAFE_INTEGER
+  if (els.length <= 0) {
+    return overIndex
+  }
+  const parentEl = els[0].parentNode as HTMLElement
+  const parentWidth = parentEl!.clientWidth as number
+  let scrollWidth = 0
+  for (let i = 0; i < els.length; i++) {
+    const el = els[i]
+    scrollWidth += el.clientWidth
+    if (scrollWidth > parentWidth) {
+      overIndex = i - 1
+      break
+    }
+  }
+  return overIndex
 }

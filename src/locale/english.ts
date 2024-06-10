@@ -77,7 +77,7 @@ const english: Record<string, string> = {
   _allContentMsg1:
     '1. After setting all data, click "synchronize to remote end" and drag the table to sort',
   _allContentMsg2: '2. Website category needs to be maintained manually,',
-  _updateLogo: 'Replace logo, 200x200',
+  _updateLogo: 'Replace logo',
   _tagName: 'Category name',
   _onlyOwnVisible: 'Only Self',
   _createAt: 'Create At',
@@ -118,7 +118,7 @@ const english: Record<string, string> = {
   _tagSettings: 'Tag settings',
   _websiteMang: 'Website management',
   _addRow: 'Add',
-  _bookImportTip: `<p>Since the author has only been tested and supported by Chrome browser, it is not supported if other browsers fail to import.</p><p>However, browsers based on WebKit kernel, such as Edge / 360, should be supported.</p>`,
+  _bookImportTip: `<p>Supports most mainstream browsers based on the webkit kernel. If the import fails, it is temporarily not supported</p>`,
   _engineName: 'Engine name',
   _status: 'Status',
   _isDisable: 'Disable',

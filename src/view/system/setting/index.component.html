@@ -1,6 +1,6 @@
 <form nz-form [formGroup]="validateForm">
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{ $t('_webLogo') }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_webLogo') }}</nz-form-label>
     <nz-form-control [nzSpan]="20">
       <label id="file">
         <img [src]="settings.favicon" class="logo" />
@@ -28,23 +28,21 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{ $t('_webDesc') }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_webDesc') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <input nz-input formControlName="description" />
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{ $t('_keywords') }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_keywords') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <input nz-input formControlName="keywords" />
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{
-      $t('_defLanguage')
-    }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_defLanguage') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <nz-select formControlName="language">
         <nz-option nzValue="zh-CN" nzLabel="简体中文"></nz-option>
@@ -54,7 +52,7 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{ $t('_pageLoad') }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_pageLoad') }}</nz-form-label>
     <nz-form-control [nzSpan]="20">
       <nz-radio-group formControlName="loading">
         <label nz-radio nzValue="random">{{ $t('_random') }}</label>
@@ -115,7 +113,16 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" [nzNoColon]="true" nzRequired>{{
+    <nz-form-label [nzSpan]="4" [nzNoColon]="true"
+      >开启SEO(加载稍慢)</nz-form-label
+    >
+    <nz-form-control [nzSpan]="20">
+      <label nz-checkbox formControlName="openSEO"></label>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4" [nzNoColon]="true">{{
       $t('_showGithub')
     }}</nz-form-label>
     <nz-form-control [nzSpan]="20">
@@ -124,7 +131,7 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" [nzNoColon]="true" nzRequired>{{
+    <nz-form-label [nzSpan]="4" [nzNoColon]="true">{{
       $t('_showLanguage')
     }}</nz-form-label>
     <nz-form-control [nzSpan]="20">
@@ -133,7 +140,7 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" [nzNoColon]="true" nzRequired>{{
+    <nz-form-label [nzSpan]="4" [nzNoColon]="true">{{
       $t('_showRate')
     }}</nz-form-label>
     <nz-form-control [nzSpan]="20">
@@ -142,16 +149,14 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" [nzNoColon]="true" nzRequired
-      >显示切换主题</nz-form-label
-    >
+    <nz-form-label [nzSpan]="4" [nzNoColon]="true">显示切换主题</nz-form-label>
     <nz-form-control [nzSpan]="20">
       <label nz-checkbox formControlName="showThemeToggle"></label>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" [nzNoColon]="true" nzRequired>{{
+    <nz-form-label [nzSpan]="4" [nzNoColon]="true">{{
       $t('_defTheme')
     }}</nz-form-label>
     <nz-form-control [nzSpan]="20">
@@ -167,11 +172,12 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" [nzNoColon]="true" nzRequired>{{
+    <nz-form-label [nzSpan]="4" [nzNoColon]="true">{{
       $t('_appTheme')
     }}</nz-form-label>
     <nz-form-control [nzSpan]="20">
       <nz-radio-group formControlName="appTheme">
+        <label nz-radio nzValue="Current">跟随页面</label>
         <label nz-radio nzValue="App">App</label>
         <label nz-radio nzValue="Light">Light</label>
         <label nz-radio nzValue="Sim">Sim</label>
@@ -181,7 +187,7 @@
     </nz-form-control>
   </nz-form-item>
 
-  <nz-form-item>
+  <!-- <nz-form-item>
     <nz-form-label [nzSpan]="4">百度统计</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <input nz-input formControlName="baiduStatisticsUrl" />
@@ -193,7 +199,7 @@
     <nz-form-control [nzSpan]="10">
       <input nz-input formControlName="cnzzStatisticsUrl" />
     </nz-form-control>
-  </nz-form-item>
+  </nz-form-item> -->
 
   <!-- 2024-06-02 废弃 -->
   <!-- <nz-form-item>
@@ -214,7 +220,7 @@
         nz-input
         formControlName="headerContent"
         [nzAutosize]="{ minRows: 3, maxRows: 5 }"
-        placeholder="位于 head 标签尾部，你可以在这里插入脚本代码或各种样式或Loading"
+        placeholder="位于 head 标签尾部，你可以在这里插入脚本代码或各种样式网站统计等"
       ></textarea>
     </nz-form-control>
   </nz-form-item>
@@ -246,15 +252,84 @@
   <h2 class="title">Light {{ $t('_theme') }}</h2>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{
-      $t('_cardStyle')
-    }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_cardStyle') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <nz-radio-group formControlName="lightCardStyle">
         <label nz-radio nzValue="standard">标准</label>
         <label nz-radio nzValue="column">栏目</label>
         <label nz-radio nzValue="example">简约</label>
       </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4">一级导航超出显示</nz-form-label>
+    <nz-form-control [nzSpan]="10">
+      <nz-radio-group formControlName="lightOverType">
+        <label nz-radio nzValue="overflow">滚动条</label>
+        <label nz-radio nzValue="ellipsis">三点式</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item class="sim-ban">
+    <nz-form-label [nzSpan]="4">侧栏图片板块</nz-form-label>
+    <nz-form-control [nzSpan]="20">
+      <nz-table
+        #basicTable
+        [nzData]="settings.lightImages"
+        [nzShowPagination]="false"
+      >
+        <thead>
+          <tr>
+            <th>{{ $t('_backgroundImage') }}</th>
+            <th>{{ $t('_jumpAddr') }}</th>
+            <th>{{ $t('_action') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of settings.lightImages; index as idx">
+            <td width="260px" class="nowrap">
+              <img [src]="data['src']" class="icon" />
+              <input
+                nz-input
+                type="text"
+                [value]="data['src']"
+                style="width: 180px; margin-right: 10px"
+                (change)="onChangeLightBannerUrl($event, idx)"
+              />
+              <app-upload
+                (onChange)="onLightBannerChange($event, idx)"
+              ></app-upload>
+            </td>
+            <td>
+              <input
+                nz-input
+                [value]="data['url']"
+                maxlength="200"
+                (change)="onChangeLightJumpUrl($event, idx)"
+              />
+            </td>
+            <td>
+              <a
+                nz-popconfirm
+                nzPopconfirmPlacement="rightTop"
+                nzOkType="danger"
+                [nzPopconfirmTitle]="$t('_confirmDel')"
+                nzPopconfirmPlacement="bottom"
+                (nzOnConfirm)="onDeleteLightBanner(idx)"
+              >
+                <a>
+                  {{ $t('_del') }}
+                </a>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+      <a (click)="onAddLightBanner()" class="mt10 display-block">{{
+        $t('_add')
+      }}</a>
     </nz-form-control>
   </nz-form-item>
 
@@ -273,14 +348,22 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{
-      $t('_cardStyle')
-    }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_cardStyle') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <nz-radio-group formControlName="superCardStyle">
         <label nz-radio nzValue="standard">标准</label>
         <label nz-radio nzValue="column">栏目</label>
         <label nz-radio nzValue="example">简约</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4">一级导航超出显示</nz-form-label>
+    <nz-form-control [nzSpan]="10">
+      <nz-radio-group formControlName="superOverType">
+        <label nz-radio nzValue="overflow">滚动条</label>
+        <label nz-radio nzValue="ellipsis">三点式</label>
       </nz-radio-group>
     </nz-form-control>
   </nz-form-item>
@@ -336,11 +419,13 @@
                   {{ $t('_del') }}
                 </a>
               </a>
-              <a (click)="onAddSuperBanner()">{{ $t('_add') }}</a>
             </td>
           </tr>
         </tbody>
       </nz-table>
+      <a (click)="onAddSuperBanner()" class="mt10 display-block">{{
+        $t('_add')
+      }}</a>
     </nz-form-control>
   </nz-form-item>
 
@@ -355,9 +440,7 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{
-      $t('_cardStyle')
-    }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_cardStyle') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <nz-radio-group formControlName="simCardStyle">
         <label nz-radio nzValue="standard">标准</label>
@@ -367,8 +450,18 @@
     </nz-form-control>
   </nz-form-item>
 
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4">一级导航超出显示</nz-form-label>
+    <nz-form-control [nzSpan]="10">
+      <nz-radio-group formControlName="simOverType">
+        <label nz-radio nzValue="overflow">滚动条</label>
+        <label nz-radio nzValue="ellipsis">三点式</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+
   <nz-form-item class="sim-ban">
-    <nz-form-label [nzSpan]="4" nzRequired>Banner</nz-form-label>
+    <nz-form-label [nzSpan]="4">Banner</nz-form-label>
     <nz-form-control [nzSpan]="20">
       <nz-table
         #basicTable
@@ -418,25 +511,25 @@
                   {{ $t('_del') }}
                 </a>
               </a>
-              <a (click)="onAddSimBanner()">{{ $t('_add') }}</a>
             </td>
           </tr>
         </tbody>
       </nz-table>
+      <a (click)="onAddSimBanner()" class="mt10 display-block">{{
+        $t('_add')
+      }}</a>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{ $t('_autoPlay') }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_autoPlay') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <label nz-checkbox formControlName="simThemeAutoplay"></label>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{
-      $t('_bannerHeight')
-    }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_bannerHeight') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <nz-slider
         formControlName="simThemeHeight"
@@ -459,34 +552,6 @@
   </nz-form-item>
 
   <div class="divider"></div>
-  <h2 class="title">Shortcut {{ $t('_theme') }}</h2>
-
-  <nz-form-item>
-    <nz-form-label [nzSpan]="4" [nzNoColon]="true" nzRequired>{{
-      $t('_showWeather')
-    }}</nz-form-label>
-    <nz-form-control [nzSpan]="20">
-      <label nz-checkbox formControlName="shortcutThemeShowWeather"></label>
-    </nz-form-control>
-  </nz-form-item>
-
-  <nz-form-item class="sim-ban">
-    <nz-form-label [nzSpan]="4">{{ $t('_backgroundImage') }}</nz-form-label>
-    <nz-form-control [nzSpan]="10">
-      <img [src]="settings.shortcutThemeImages[0]['src']" />
-      <app-upload (onChange)="onShortcutImgChange($event)"></app-upload>
-
-      <input
-        nz-input
-        type="text"
-        [value]="settings.shortcutThemeImages[0]['src']"
-        (change)="onShortcutImgChange($event)"
-        style="width: 300px; margin-top: 10px"
-      />
-    </nz-form-control>
-  </nz-form-item>
-
-  <div class="divider"></div>
   <h2 class="title">Side {{ $t('_theme') }}</h2>
 
   <nz-form-item>
@@ -501,9 +566,7 @@
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{
-      $t('_cardStyle')
-    }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_cardStyle') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <nz-radio-group formControlName="sideCardStyle">
         <label nz-radio nzValue="standard">标准</label>
@@ -514,7 +577,7 @@
   </nz-form-item>
 
   <nz-form-item class="sim-ban">
-    <nz-form-label [nzSpan]="4" nzRequired>Banner</nz-form-label>
+    <nz-form-label [nzSpan]="4">Banner</nz-form-label>
     <nz-form-control [nzSpan]="20">
       <nz-table
         #basicTable
@@ -564,25 +627,25 @@
                   {{ $t('_del') }}
                 </a>
               </a>
-              <a (click)="onAddSideBanner()">{{ $t('_add') }}</a>
             </td>
           </tr>
         </tbody>
       </nz-table>
+      <a (click)="onAddSideBanner()" class="mt10 display-block">{{
+        $t('_add')
+      }}</a>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{ $t('_autoPlay') }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_autoPlay') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <label nz-checkbox formControlName="sideThemeAutoplay"></label>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSpan]="4" nzRequired>{{
-      $t('_bannerHeight')
-    }}</nz-form-label>
+    <nz-form-label [nzSpan]="4">{{ $t('_bannerHeight') }}</nz-form-label>
     <nz-form-control [nzSpan]="10">
       <nz-slider
         formControlName="sideThemeHeight"
@@ -590,6 +653,45 @@
         [nzMax]="1000"
       ></nz-slider>
       <div>当高度为0时，图片宽高会自适应，务必保证每张图片尺寸一致</div>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="divider"></div>
+  <h2 class="title">Shortcut {{ $t('_theme') }}</h2>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4">标题</nz-form-label>
+    <nz-form-control [nzSpan]="10">
+      <input
+        nz-input
+        formControlName="shortcutTitle"
+        placeholder="默认网站标题"
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="4" [nzNoColon]="true">{{
+      $t('_showWeather')
+    }}</nz-form-label>
+    <nz-form-control [nzSpan]="20">
+      <label nz-checkbox formControlName="shortcutThemeShowWeather"></label>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item class="sim-ban">
+    <nz-form-label [nzSpan]="4">{{ $t('_backgroundImage') }}</nz-form-label>
+    <nz-form-control [nzSpan]="10">
+      <img [src]="settings.shortcutThemeImages[0]['src']" />
+      <app-upload (onChange)="onShortcutImgChange($event)"></app-upload>
+
+      <input
+        nz-input
+        type="text"
+        [value]="settings.shortcutThemeImages[0]['src']"
+        (change)="onShortcutImgChange($event)"
+        style="width: 300px; margin-top: 10px"
+      />
     </nz-form-control>
   </nz-form-item>
 
