@@ -1,12 +1,14 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
-import { Component, Input } from '@angular/core'
-import { settings, internal } from 'src/store'
-import { isLogin } from 'src/utils/user'
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
+import { settings } from 'src/store'
+import { compilerTemplate } from 'src/utils/util'
+import event from 'src/utils/mitt'
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
@@ -20,12 +22,26 @@ export class FooterComponent {
   constructor() {}
 
   ngOnInit() {
-    this.footerContent = (this.content || settings.footerContent)
-      .replace(
-        '${total}',
-        String(isLogin ? internal.loginViewCount : internal.userViewCount)
-      )
-      .replace('${hostname}', window.location.hostname)
-      .replace('${year}', String(new Date().getFullYear()))
+    this.footerContent = compilerTemplate(
+      this.content || settings.footerContent
+    )
+  }
+
+  ngOnDestroy() {
+    const applyWebEls = document.querySelectorAll('#app-footer .applyweb')
+    applyWebEls.forEach((el) => {
+      el.removeEventListener('click', this.handleApplyWeb)
+    })
+  }
+
+  handleApplyWeb() {
+    event.emit('CREATE_WEB')
+  }
+
+  ngAfterViewInit() {
+    const applyWebEls = document.querySelectorAll('#app-footer .applyweb')
+    applyWebEls.forEach((el) => {
+      el.addEventListener('click', this.handleApplyWeb)
+    })
   }
 }

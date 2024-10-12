@@ -1,11 +1,12 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 
 import { Component } from '@angular/core'
 import { isDark as isDarkFn, getDateTime, isMobile } from 'src/utils'
 import { settings } from 'src/store'
 import { IWebProps } from 'src/types'
 import { JumpService } from 'src/services/jump'
+import { $t } from 'src/locale'
 import event from 'src/utils/mitt'
 
 @Component({
@@ -14,13 +15,14 @@ import event from 'src/utils/mitt'
   styleUrls: ['./index.component.scss'],
 })
 export default class ShortcutComponent {
+  $t = $t
   settings = settings
   isMobile = isMobile()
   isDark: boolean = isDarkFn()
   shortcutThemeImage = settings.shortcutThemeImages?.[0]?.['src']
   timer: any = null
-  month = ''
-  date = ''
+  month = 0
+  date = 0
   hours = ''
   minutes = ''
   seconds = ''

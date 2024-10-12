@@ -1,5 +1,5 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import qs from 'qs'
@@ -9,11 +9,13 @@ import {
   INavThreeProp,
   INavProps,
   ISearchEngineProps,
+  IWebTag,
 } from '../types'
 import { STORAGE_KEY_MAP } from 'src/constants'
 import { isLogin } from './user'
 import { SearchType } from 'src/components/search-engine/index'
-import { websiteList, searchEngineList } from 'src/store'
+import { websiteList, searchEngineList, settings } from 'src/store'
+import { $t } from 'src/locale'
 
 export function randomInt(max: number) {
   return Math.floor(Math.random() * max)
@@ -49,14 +51,13 @@ export function fuzzySearch(
         const desc = item.desc.toLowerCase()
         const url = item.url.toLowerCase()
         const search = keyword.toLowerCase()
-        const urls: string[] = Object.values(item.urls || {})
 
         const searchTitle = (): boolean => {
           if (name.includes(search)) {
             let result = item
             const regex = new RegExp(`(${keyword})`, 'i')
             result.__name__ = result.name
-            result.name = result.name.replace(regex, `$1`.bold())
+            result.name = result.name.replace(regex, '<b>$1</b>')
 
             if (!urlRecordMap[result.id]) {
               urlRecordMap[result.id] = true
@@ -76,7 +77,9 @@ export function fuzzySearch(
             }
           }
 
-          const find = urls.some((item: string) => item.includes(keyword))
+          const find = item.tags.some((item: IWebTag) =>
+            item.url?.includes(keyword)
+          )
           if (find) {
             if (!urlRecordMap[item.id]) {
               urlRecordMap[item.id] = true
@@ -94,7 +97,23 @@ export function fuzzySearch(
             let result = item
             const regex = new RegExp(`(${keyword})`, 'i')
             result.__desc__ = result.desc
-            result.desc = result.desc.replace(regex, `$1`.bold())
+            result.desc = result.desc.replace(regex, '<b>$1</b>')
+
+            if (!urlRecordMap[result.id]) {
+              urlRecordMap[result.id] = true
+              navData.push(result)
+              return true
+            }
+          }
+          return false
+        }
+
+        const searchQuick = (): boolean => {
+          if (item.top && name.includes(search)) {
+            let result = item
+            const regex = new RegExp(`(${keyword})`, 'i')
+            result.__name__ = result.name
+            result.name = result.name.replace(regex, '<b>$1</b>')
 
             if (!urlRecordMap[result.id]) {
               urlRecordMap[result.id] = true
@@ -117,6 +136,10 @@ export function fuzzySearch(
 
             case SearchType.Desc:
               searchDesc()
+              break
+
+            case SearchType.Quick:
+              searchQuick()
               break
 
             default:
@@ -242,7 +265,11 @@ export function getDefaultSearchEngine(): ISearchEngineProps {
   try {
     const engine = window.localStorage.getItem(STORAGE_KEY_MAP.engine)
     if (engine) {
-      DEFAULT = JSON.parse(engine)
+      const local = JSON.parse(engine)
+      const findItem = searchEngineList.find((item) => item.name === local.name)
+      if (findItem) {
+        DEFAULT = findItem
+      }
     }
   } catch {}
   return DEFAULT
@@ -335,8 +362,8 @@ export function matchCurrentList(): INavThreeProp[] {
   return data
 }
 
-export function addZero(n: number): string | number {
-  return n < 10 ? `0${n}` : n
+export function addZero(n: number): string {
+  return n < 10 ? `0${n}` : String(n)
 }
 
 // 获取第几个元素超出父节点宽度
@@ -364,29 +391,43 @@ export function isMobile() {
   return 'ontouchstart' in window
 }
 
-export function getDateTime(): Record<string, any> {
-  const days = [
-    '星期日',
-    '星期一',
-    '星期二',
-    '星期三',
-    '星期四',
-    '星期五',
-    '星期六',
-  ]
+// 今年第几天
+export function getDayOfYear() {
   const now = new Date()
+  const startOfYear = new Date(now.getFullYear(), 0, 0)
+  // @ts-ignore
+  const diff = now - startOfYear
+  const oneDay = 1000 * 60 * 60 * 24
+  return Math.floor(diff / oneDay)
+}
+
+export function getDateTime() {
+  const weeks = $t('_weeks')
+  const now = new Date()
+  const year = now.getFullYear()
   const hours = addZero(now.getHours())
   const minutes = addZero(now.getMinutes())
   const seconds = addZero(now.getSeconds())
   const month = now.getMonth() + 1
   const date = now.getDate()
   const day = now.getDay()
+  const zeroDate = addZero(date)
   return {
+    year,
     hours,
     minutes,
     seconds,
     month,
     date,
-    dayText: days[day],
+    zeroDate,
+    dayText: weeks[day],
+  } as const
+}
+
+export function getDefaultTheme() {
+  const t = isMobile() ? settings.appTheme : settings.theme
+  if (t === 'Current') {
+    return settings.theme
   }
+  return t
 }

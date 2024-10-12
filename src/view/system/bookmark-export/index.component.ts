@@ -1,5 +1,5 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import { Component } from '@angular/core'
@@ -121,6 +121,7 @@ export default class SystemBookmarkExportComponent {
         delete item.createdAt
         delete item.rate
         delete item.top
+        delete item.topTypes
         delete item.index
         delete item.ownVisible
         delete item.breadcrumb
@@ -128,11 +129,11 @@ export default class SystemBookmarkExportComponent {
         delete item.__name__
         delete item.__desc__
         delete item.collapsed
+        delete item.tags
         if (Array.isArray(item.nav)) {
           getIconItems(item.nav)
         }
         if (item.url) {
-          delete item.urls
           promiseItems.push(
             that.imageToBase64(item).finally(() => {
               that.currentNumber += 1

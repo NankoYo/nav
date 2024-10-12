@@ -1,5 +1,5 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import {
@@ -18,6 +18,7 @@ import { websiteList, settings } from 'src/store'
 import { DB_PATH, STORAGE_KEY_MAP } from 'src/constants'
 import { Router, ActivatedRoute } from '@angular/router'
 import { $t, getLocale } from 'src/locale'
+import { addDark, removeDark } from 'src/utils/util'
 import mitt from 'src/utils/mitt'
 
 @Component({
@@ -75,7 +76,7 @@ export class FixbarComponent {
     private activatedRoute: ActivatedRoute
   ) {
     if (this.isDark) {
-      document.documentElement.classList.add('dark-container')
+      addDark()
     }
 
     const url = this.router.url.split('?')[0]
@@ -89,6 +90,9 @@ export class FixbarComponent {
       })
       .filter((t) => {
         if (url === '/' && url + settings.theme?.toLowerCase?.() === t.url) {
+          return false
+        }
+        if (t.url === '/' && url === t.url + settings.theme?.toLowerCase?.()) {
           return false
         }
         return t.url !== url
@@ -138,11 +142,12 @@ export class FixbarComponent {
       STORAGE_KEY_MAP.isDark,
       String(Number(this.isDark))
     )
-    document.documentElement.classList.toggle('dark-container')
 
     if (this.isDark) {
+      addDark()
       this.removeBackground()
     } else {
+      removeDark()
       const { data } = this.activatedRoute.snapshot
       data['renderLinear'] && randomBgImg()
     }

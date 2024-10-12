@@ -2,7 +2,7 @@
   <nz-spin
     nzSimple
     *ngIf="commonService.sliceMax === 0"
-    class="position-center mt10"
+    class="position-center mt-2.5"
   />
 
   <div
@@ -24,6 +24,10 @@
         [innerHTML]="description | safeHtml"
       ></pre>
     </div>
+  </div>
+
+  <div class="sim-component">
+    <component-group></component-group>
   </div>
 
   <app-search-engine class="hidden search-sm" />
@@ -136,11 +140,10 @@
 <app-footer
   className="sim-footer"
   [content]="commonService.settings.simFooterHTML"
-></app-footer>
+/>
 <app-fixbar
   (onCollapse)="commonService.onCollapseAll()"
   [collapsed]="commonService.collapsed"
->
-</app-fixbar>
+/>
 
 <div class="sim-bg dark-bg"></div>

@@ -1,11 +1,12 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 
 import dbJson from '../../data/db.json'
 import searchJson from '../../data/search.json'
 import settingsJson from '../../data/settings.json'
 import tagJson from '../../data/tag.json'
 import internalJson from '../../data/internal.json'
+import componentJson from '../../data/component.json'
 import {
   ISettings,
   ISearchEngineProps,
@@ -13,6 +14,7 @@ import {
   internalProps,
   ITagPropValues,
   INavProps,
+  IComponentProps,
 } from 'src/types'
 import { isSelfDevelop } from 'src/utils/util'
 
@@ -45,3 +47,5 @@ export let internal: internalProps = internalJson
 export let websiteList: INavProps[] = isSelfDevelop
   ? []
   : (dbJson as INavProps[])
+
+export let components: IComponentProps[] = isSelfDevelop ? [] : componentJson

@@ -1,5 +1,5 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import { Component } from '@angular/core'
@@ -86,7 +86,7 @@ export class MoveWebComponent {
   }
 
   hanldeOk() {
-    const indexs = this.indexs.filter((i) => i != null)
+    const indexs = this.indexs
     const oneSelect = this.oneSelect as number
     const twoSelect = this.twoSelect as number
     const threeSelect = this.threeSelect as number

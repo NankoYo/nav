@@ -1,11 +1,11 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import { Component, EventEmitter, Output } from '@angular/core'
 import { $t } from 'src/locale'
 import { NzMessageService } from 'ng-zorro-antd/message'
-import { createFile, getCDN } from 'src/api'
+import { createFile, getCDN, imageBranch } from 'src/api'
 
 @Component({
   selector: 'app-upload',
@@ -54,7 +54,7 @@ export class UploadComponent {
         const path = `nav-${Date.now()}-${fileName}`
 
         createFile({
-          branch: 'image',
+          branch: imageBranch || 'image',
           message: 'create image',
           content: url,
           isEncode: false,

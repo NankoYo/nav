@@ -1,9 +1,8 @@
 <nz-spin nzTip="Loading..." [nzSpinning]="submitting">
-  <div *ngIf="!isPermission" class="center">请到会员授权页面查看</div>
-
   <div *ngIf="isPermission">
     <button
-      class="mt10"
+      *ngIf="!isSelfDevelop"
+      class="mt-2.5 mr-2.5"
       nz-button
       nzType="primary"
       (click)="handleSubmit()"
@@ -12,17 +11,12 @@
       {{ $t('_save') }}
     </button>
 
-    <button
-      class="ml10"
-      nz-button
-      (click)="getUserCollect()"
-      [nzLoading]="submitting"
-    >
+    <button nz-button (click)="getUserCollect()" [nzLoading]="submitting">
       {{ $t('_refresh') }}
     </button>
 
-    <div class="mb10 mt10">
-      <b>处理完成所有数据后需要点击一次保存方可生效</b>
+    <div class="mb-2.5 mt-2.5 color-red font-bold" *ngIf="!isSelfDevelop">
+      处理完成所有数据后需要点击一次保存方可生效
     </div>
     <nz-table #basicTable [nzData]="dataList" [nzShowPagination]="false">
       <thead>
@@ -42,7 +36,7 @@
             <div>
               <a (click)="handleConfirmGet(data, idx)">{{ $t('_collect') }}</a>
             </div>
-            <div class="mt10">
+            <div class="mt-2.5">
               <a
                 nz-popconfirm
                 nzPopconfirmPlacement="rightTop"
@@ -50,30 +44,20 @@
                 [nzPopconfirmTitle]="$t('_confirmDel')"
                 nzPopconfirmPlacement="bottom"
                 (nzOnConfirm)="handleDelete(idx)"
+                class="color-red"
               >
-                <b>{{ $t('_del') }}</b>
+                {{ $t('_del') }}
               </a>
             </div>
           </td>
           <td>
-            <app-logo *ngIf="data.icon" [src]="data.icon" [name]="data.name">
-            </app-logo>
+            <app-logo [src]="data.icon" [name]="data.name" />
           </td>
           <td>
             <a [href]="data.url" target="_blank">{{ data.name }}</a>
           </td>
           <td>
-            <nz-tag
-              *ngFor="let key of objectKeys(data.urls || {})"
-              [nzColor]="(tagMap[key] && tagMap[key].color) || '#1890ff'"
-              style="margin-bottom: 5px"
-            >
-              <a
-                [href]="data.urls?.[key] || 'javascript:void(0)'"
-                [target]="data.urls?.[key] ? '_blank' : ''"
-                >{{ tagMap[key] && tagMap[key].name }}</a
-              >
-            </nz-tag>
+            <tag-list [data]="data.tags" *ngIf="data.tags" />
           </td>
           <td>
             <pre class="desc">{{ data.desc }}</pre>

@@ -50,7 +50,6 @@
 @media (max-width: 768px) {
   .search-sm {
     display: block;
-    margin-top: 10px;
   }
 }
 
@@ -142,6 +141,12 @@
     }
   }
 
+  .sim-component {
+    min-width: var(--width);
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
   .wrapper {
     flex: 1;
     position: relative;
@@ -185,17 +190,9 @@
     .site-box {
       flex: 1;
       position: relative;
-      background-color: #fff;
+      background-color: #f9f9f9;
       padding: 15px;
       border-radius: 4px;
     }
-  }
-}
-
-::ng-deep {
-  #app-footer,
-  #app-footer .copyright {
-    margin-bottom: 10px;
-    color: #666;
   }
 }

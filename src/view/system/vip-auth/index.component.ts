@@ -1,5 +1,5 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import { Component } from '@angular/core'
@@ -30,8 +30,10 @@ export default class VipAuthComponent {
     this.submitting = true
     return getUserInfo(params)
       .then((res: any) => {
-        this.isPermission = true
-        this.url = res.data?.data?.url || ''
+        if (typeof res.data?.data?.url === 'string') {
+          this.isPermission = true
+          this.url = res.data.data.url
+        }
         return res
       })
       .finally(() => {
@@ -46,6 +48,7 @@ export default class VipAuthComponent {
 
     this.getUserInfo({ code: this.authCode }).then(() => {
       setAuthCode(this.authCode)
+      window.location.reload()
     })
   }
 

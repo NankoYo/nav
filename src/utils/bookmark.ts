@@ -1,5 +1,5 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xie.jiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xie.jiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import { INavProps } from '../types'
@@ -55,7 +55,7 @@ function findAllNoCate(roolDL: Element) {
         createdAt,
         icon,
         url,
-        urls: {},
+        tags: [],
         desc: '',
         rate: 5,
         id: (id += 1),
@@ -177,7 +177,7 @@ export function parseBookmark(htmlStr: string) {
                       createdAt,
                       url,
                       desc: '',
-                      urls: {},
+                      tags: [],
                       rate: 5,
                       top: false,
                       icon,

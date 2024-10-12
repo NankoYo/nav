@@ -1,4 +1,4 @@
-// Copyright @ 2018-present x.iejiahe. All rights reserved. MIT license.
+// Copyright @ 2018-present x.iejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 import dayjs from 'dayjs'
 import LOAD_MAP from './loading.mjs'
@@ -13,9 +13,9 @@ dayjs.tz.setDefault('Asia/Shanghai')
 export const TAG_ID1 = -1
 export const TAG_ID2 = -2
 export const TAG_ID3 = -3
-const TAG_ID_NAME1 = '中文'
-const TAG_ID_NAME2 = '英文'
-const TAG_ID_NAME3 = 'Github'
+export const TAG_ID_NAME1 = '中文'
+export const TAG_ID_NAME2 = '英文'
+export const TAG_ID_NAME3 = 'GitHub'
 
 // 统计网站数量
 export function getWebCount(websiteList) {
@@ -64,7 +64,7 @@ export function getWebCount(websiteList) {
 }
 
 // 设置网站的面包屑类目显示
-export function setWeb(nav, settings) {
+export function setWeb(nav, settings, tags = []) {
   let id = 0 // 为每个网站设置唯一ID
   if (!Array.isArray(nav)) return
 
@@ -78,6 +78,7 @@ export function setWeb(nav, settings) {
     if (typeof item.icon === 'string' && item.icon.startsWith('icon')) {
       item.icon = ''
     }
+    item.icon = replaceJsdelivrCDN(item.icon, settings)
   }
 
   function formatDate(item) {
@@ -101,8 +102,10 @@ export function setWeb(nav, settings) {
             formatDate(navItemItem)
 
             navItemItem.nav.sort((a, b) => {
-              const aIdx = a.index == null || a.index === '' ? 100000 : a.index
-              const bIdx = b.index == null || b.index === '' ? 100000 : b.index
+              const aIdx =
+                a.index == null || a.index === '' ? 100000 : Number(a.index)
+              const bIdx =
+                b.index == null || b.index === '' ? 100000 : Number(b.index)
               return aIdx - bIdx
             })
             if (navItemItem.nav) {
@@ -117,6 +120,7 @@ export function setWeb(nav, settings) {
 
                 // 新字段补充
                 webItem.urls ||= {}
+                webItem.tags ||= []
                 webItem.rate ??= 5
                 webItem.top ??= false
                 webItem.ownVisible ??= false
@@ -141,9 +145,15 @@ export function setWeb(nav, settings) {
                 if (!webItem.ownVisible) {
                   delete webItem.ownVisible
                 }
+                if (webItem.index === '') {
+                  delete webItem.index
+                }
+                if (webItem.topTypes?.length <= 0) {
+                  delete webItem.topTypes
+                }
 
-                // 兼容现有标签,以id为key
-                for (let k in webItem.urls) {
+                // 兼容现有标签,以id为key (V9版本删除)
+                for (const k in webItem.urls) {
                   if (k === TAG_ID_NAME1) {
                     webItem.urls[TAG_ID1] = webItem.urls[k]
                     delete webItem.urls[TAG_ID_NAME1]
@@ -157,6 +167,23 @@ export function setWeb(nav, settings) {
                     delete webItem.urls[TAG_ID_NAME3]
                   }
                 }
+
+                // 从 v8.10.0 开始为了能够排序标签从对象改为数组
+                if (webItem.tags.length <= 0) {
+                  for (const k in webItem.urls) {
+                    const id = String(k)
+                    // 网站标签和系统标签关联，如果系统标签删除了，网站标签也被删除
+                    const has = tags.some((item) => String(item.id) === id)
+                    if (has) {
+                      webItem.tags.push({
+                        id: String(k),
+                        url: webItem.urls[k],
+                      })
+                    }
+                  }
+                }
+
+                delete webItem.urls
               }
             }
           }
@@ -168,12 +195,10 @@ export function setWeb(nav, settings) {
 }
 
 export function writeSEO(webs, payload) {
-  const { settings, pkg } = payload
+  const { settings } = payload
   const nowDate = dayjs.tz().format('YYYY-MM-DD HH:mm:ss')
   let seoTemplate = `
-<div data-url="https://github.com/xjh22222228/nav" data-server-time="${Date.now()}" data-a="x.i.e-jiahe" data-date="${nowDate}" data-version="${
-    pkg.version
-  }" id="META-NAV" style="z-index:-1;position:fixed;top:-10000vh;left:-10000vh;">
+<div data-url="https://github.com/xjh22222228/nav" data-server-time="${Date.now()}" data-a="x.i.e-jiahe" data-date="${nowDate}" id="META-NAV" style="z-index:-1;position:fixed;top:-10000vh;left:-10000vh;">
 `
 
   function r(navList) {
@@ -209,10 +234,14 @@ export function writeTemplate({ html, settings, seoTemplate }) {
   const htmlTemplate = `
   <!-- https://github.com/xjh22222228/nav -->
   <title>${settings.title}</title>
-  <meta name="description" content="${settings.description}">
-  <meta name="keywords" content="${settings.keywords}" id="xjh_2">
-  <link rel="icon" href="${settings.favicon}">
-  <link rel ="apple-touch-icon" href="${settings.favicon}">
+  <meta property="og:title" content="${settings.title}" />
+  <meta property="og:description" content="${settings.description}" />
+  <meta property="og:type" content="website" />
+  <meta name="description" content="${settings.description}" />
+  <meta name="keywords" content="${settings.keywords}" id="xjh_2" />
+  <link rel="icon" href="${settings.favicon}" />
+  <link rel ="apple-touch-icon" href="${settings.favicon}" />
+  <link rel="prefetch" href="//unpkg.com/ng-zorro-antd@18.1.1/ng-zorro-antd.dark.min.css" />
 `.trim()
   let t = html
   t = t.replace(

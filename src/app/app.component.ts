@@ -1,10 +1,10 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import { Component } from '@angular/core'
-import { Router, ActivatedRoute, ChildActivationStart } from '@angular/router'
-import { queryString, setLocation, isMobile } from '../utils'
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router'
+import { queryString, setLocation, isMobile, getDefaultTheme } from '../utils'
 import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n'
 import { getLocale } from 'src/locale'
 import { settings } from 'src/store'
@@ -14,6 +14,7 @@ import { NzMessageService } from 'ng-zorro-antd/message'
 import { NzNotificationService } from 'ng-zorro-antd/notification'
 import { fetchWeb } from 'src/utils/web'
 import { isSelfDevelop } from 'src/utils/util'
+import { routes } from './app-routing.module'
 import Alert from './alert-event'
 import event from 'src/utils/mitt'
 
@@ -36,11 +37,17 @@ export class AppComponent {
     new Alert(message, notification)
 
     this.router.events.subscribe((event) => {
-      if (event instanceof ChildActivationStart) {
-        const title = event.snapshot.children?.[0]?.['data']?.['title']
-        document.title = title || settings.title
+      if (event instanceof NavigationEnd) {
+        this.updateDocumentTitle()
       }
     })
+  }
+
+  updateDocumentTitle() {
+    const url = this.router.url.split('?')[0].slice(1)
+    const theme = (url === '' ? settings.theme : url).toLowerCase()
+    const title = settings[`${theme}DocTitle`]
+    document.title = title || window.__TITLE__ || settings.title
   }
 
   ngOnInit() {
@@ -67,17 +74,33 @@ export class AppComponent {
           userLogout()
           setTimeout(() => {
             location.reload()
-          }, 3000)
+          }, 1000)
         })
     }
 
     if (isSelfDevelop) {
       getContentes().then(() => {
+        // 处理默认主题
+        const currentRoutes = this.router.config
+        const defaultTheme = getDefaultTheme().toLowerCase()
+        const hasDefault = routes.find((item) => item.path === defaultTheme)
+        const isHome = this.router.url.split('?')[0] === '/'
+        if (hasDefault) {
+          this.router.resetConfig([
+            ...currentRoutes,
+            {
+              ...hasDefault,
+              path: '**',
+            },
+          ])
+        }
+        if (isHome) {
+          this.router.navigate([defaultTheme])
+        }
+        this.updateDocumentTitle()
         this.fetchIng = false
-        queueMicrotask(() => {
-          event.emit('WEB_FINISH')
-          window.__FINISHED__ = true
-        })
+        event.emit('WEB_FINISH')
+        window.__FINISHED__ = true
       })
     } else {
       fetchWeb().finally(() => {

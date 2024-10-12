@@ -1,5 +1,6 @@
 import event from 'src/utils/mitt'
 import localforage from 'localforage'
+import navConfig from '../../nav.config.json'
 import { updateFileContent } from 'src/api'
 import { isLogin } from './user'
 import { IWebProps, INavProps } from '../types'
@@ -7,6 +8,7 @@ import { websiteList } from 'src/store'
 import { STORAGE_KEY_MAP, DB_PATH } from 'src/constants'
 import { isSelfDevelop } from './util'
 import { queryString } from './index'
+import { $t } from 'src/locale'
 
 function adapterWebsiteList(websiteList: any[]) {
   function filterOwn(item: IWebProps) {
@@ -32,14 +34,22 @@ export async function fetchWeb() {
   if (isSelfDevelop) {
     return
   }
+  function finish(dbData: any) {
+    dbData.forEach((item: any) => {
+      websiteList.push(item)
+    })
+    event.emit('WEB_FINISH')
+    window.__FINISHED__ = true
+  }
   let data = adapterWebsiteList(websiteList)
   websiteList.splice(0, websiteList.length)
-  const metaEl = document.getElementById('META-NAV')
-  const date = metaEl?.dataset?.['date'] || ''
+  if (!isLogin) {
+    return finish(data)
+  }
   const storageDate = window.localStorage.getItem(STORAGE_KEY_MAP.s_url)
 
   // 检测到网站更新，清除缓存本地保存记录失效
-  if (storageDate !== date) {
+  if (storageDate !== navConfig.datetime) {
     const whiteList = [
       STORAGE_KEY_MAP.token,
       STORAGE_KEY_MAP.isDark,
@@ -53,19 +63,15 @@ export async function fetchWeb() {
       }
       window.localStorage.removeItem(key)
     }
-    window.localStorage.setItem(STORAGE_KEY_MAP.s_url, date)
+    window.localStorage.setItem(STORAGE_KEY_MAP.s_url, navConfig.datetime)
     localforage.removeItem(STORAGE_KEY_MAP.website)
-    data.forEach((item) => {
-      websiteList.push(item)
-    })
-    event.emit('WEB_FINISH')
-    window.__FINISHED__ = true
+    finish(data)
     if (isLogin) {
       setTimeout(() => {
         event.emit('NOTIFICATION', {
           type: 'success',
-          title: `构建完成`,
-          content: date,
+          title: $t('_buildSuccess'),
+          content: navConfig.datetime,
           config: {
             nzDuration: 0,
           },
@@ -78,24 +84,21 @@ export async function fetchWeb() {
   try {
     const dbData: any =
       (await localforage.getItem(STORAGE_KEY_MAP.website)) || data
-    dbData.forEach((item: any) => {
-      websiteList.push(item)
-    })
-    event.emit('WEB_FINISH')
-    window.__FINISHED__ = true
-  } catch {}
+    finish(dbData)
+  } catch {
+    finish(data)
+  }
 }
 
-export function setWebsiteList(v?: INavProps[]) {
+export function setWebsiteList(v?: INavProps[]): Promise<any> {
   v = v || websiteList
   if (isSelfDevelop) {
-    updateFileContent({
+    return updateFileContent({
       content: JSON.stringify(v),
       path: DB_PATH,
     })
-    return
   }
-  localforage.setItem(STORAGE_KEY_MAP.website, v)
+  return localforage.setItem(STORAGE_KEY_MAP.website, v)
 }
 
 export function toggleCollapseAll(wsList?: INavProps[]): boolean {
@@ -113,28 +116,41 @@ export function toggleCollapseAll(wsList?: INavProps[]): boolean {
   return collapsed
 }
 
-export function deleteByWeb(data: IWebProps) {
+export function deleteByWeb(data: IWebProps): boolean {
+  let hasDelete = false
   function f(arr: any[]) {
     for (let i = 0; i < arr.length; i++) {
       const item = arr[i]
       if (item.name) {
         if (item.id === data.id) {
+          hasDelete = true
           arr.splice(i, 1)
-          const { q } = queryString()
-          q && window.location.reload()
           break
         }
         continue
       }
 
       if (Array.isArray(item.nav)) {
+        item.nav = item.nav.filter((w: IWebProps) => {
+          if (w.name && w.id === data.id) {
+            hasDelete = true
+            return false
+          }
+          return true
+        })
         f(item.nav)
       }
     }
   }
 
   f(websiteList)
-  setWebsiteList(websiteList)
+  if (hasDelete) {
+    setWebsiteList(websiteList)
+    const { q } = queryString()
+    // 在搜索结果删除需要刷新重新刷结果
+    q && window.location.reload()
+  }
+  return hasDelete
 }
 
 export function updateByWeb(oldData: IWebProps, newData: IWebProps) {

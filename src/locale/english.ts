@@ -1,7 +1,7 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
 import { isSelfDevelop } from 'src/utils/util'
 
-const english: Record<string, string> = {
+const english: Record<string, any> = {
   _loading: 'Loading...',
   _webTitle: 'Discovery Navigation',
   _uncategorized: 'Unclassified',
@@ -41,17 +41,22 @@ const english: Record<string, string> = {
   _prevDevTime: 'Last build time',
   _unknow: 'Unknow',
   _repeatOper: 'Please do not operate frequently',
-  _syncDataOut: isSelfDevelop ? 'OK to sync' : 'Synchronize data to remote',
-  _confirmSync: 'OK to sync',
+  _syncDataOut: isSelfDevelop
+    ? 'Are you sure to save'
+    : 'Synchronize data to remote',
+  _confirmSync: 'OK',
   _confirmSyncTip: isSelfDevelop
     ? ''
     : 'Are you sure to synchronize all data to the remote end?',
-  _syncSuccessTip:
-    'The synchronization is successful. It takes about 5 minutes to build',
+  _syncSuccessTip: isSelfDevelop
+    ? 'OK'
+    : 'The synchronization is successful. It takes about 5 minutes to build',
   _error: 'Error',
   _syncFailTip: 'Synchronization failed, please try again',
   _inputToken: 'Please enter token',
-  _inputTokenMsg: 'Please enter your token below for login verification',
+  _inputTokenMsg: isSelfDevelop
+    ? 'Please input a password'
+    : 'Please enter your token below for login verification',
   _getToken: `I don't know how to get the token?`,
   _readDoc: 'Please read our guide first',
   _authLogin: 'Please authorize login',
@@ -126,8 +131,8 @@ const english: Record<string, string> = {
   _userCollect: 'Collect',
   _bookmarkImport: 'Book Import',
   _bookmarkExport: 'Book Export',
-  _vipAuth: 'VIP Auth',
-  _tagSettings: 'Tag settings',
+  _vipAuth: 'Bind domain',
+  _tagSettings: 'Tag',
   _websiteMang: 'Website',
   _addRow: 'Add',
   _bookImportTip: `<p>Supports most mainstream browsers. If the import fails, it is temporarily not supported</p>`,
@@ -159,9 +164,6 @@ const english: Record<string, string> = {
   _importBackupTip:
     'After importing, all current website data will be cleared and imported',
   _showLanguage: 'Display switch language',
-  _mirrorList: 'Mirror list',
-  _mirrorAddr: 'Mirror Address',
-  _mirrorName: 'Mirror Name',
   _showRate: 'Show rate',
   _showCopy: 'Display Card Copy',
   _showShare: 'Show card sharing',
@@ -174,9 +176,6 @@ const english: Record<string, string> = {
     'Last time, {count} website links were detected to be invalid. Please refer to the management website for details. If you need to check the status again, simply click Save to trigger the event.',
   _buildTip:
     'After modification, please save and wait for the build to complete. Leaving is invalid',
-  _updateTip:
-    'Frequent system updates, it is recommended to execute updates regularly to enjoy the latest system functions',
-  _clickUpdate: 'Click me to update',
   _enableSEO: 'Enable SEO (loading slightly slower)',
   _allowCollect: 'Allow users to submit indexed content',
   _collectMenuView: `Please refer to the user's inclusion menu for specific details`,
@@ -189,11 +188,10 @@ const english: Record<string, string> = {
     'When the height is 0, the width and height of the image will be adaptive, and it is important to ensure that each image has the same size',
   _checkStatus:
     'Check website link status(For any of the above updates, it is recommended to enable this, as it takes the same amount of time.)',
-  _ignore:
-    '(This function is not very useful, it is recommended to ignore or remove it)',
   _standard: 'Standard',
   _column: 'Column',
   _simplicity: 'Simplicity',
+  _original: 'Original',
   _navOver: 'First level navigation beyond display',
   _scrollBar: 'Scroll bar',
   _ellipsis: 'Ellipsis',
@@ -205,12 +203,14 @@ const english: Record<string, string> = {
   _collect: 'Get',
   _confirmCollect: 'Are you sure?',
   _pendingGet: 'Getting...',
-  _logoutAuthCode: 'Exit authorization',
+  _logoutAuthCode: 'Exit',
   _spiderRule: 'Spider rule',
   _spiderIcon: 'Spider icon',
   _spiderDesc: 'Spider description',
+  _notSpider: 'Not updating',
   _spiderTitle: 'Spider title',
   _spiderAlways: 'Always update',
+  _spiderEmpty: 'Update for empty time',
   _spiderStatus: 'Spider Status',
   _spiderTip:
     'Crawling rules will be triggered every time saving, affecting the construction speed. Crawling and updating information may be necessary when necessary',
@@ -228,6 +228,54 @@ const english: Record<string, string> = {
     'Crawl the website for a specified number of seconds with no response, skip, The larger the number, the higher the success rate, but the slower it is',
   _imageCDN: 'Image CDN',
   _docTitle: 'Document title',
+  _importEnter: `Enter in browser <a href="chrome://bookmarks/" target="_blank">chrome://bookmarks/</a> Find the export bookmark, export the HTML file, click import below`,
+  _buildSuccess: 'Build succeed',
+  _bindDomain: `Bind domain names, multiple separated by commas, without including protocols such as "example.com,xjh22222228.github.io"`,
+  _clickExport: 'Click on me to export',
+  _exportIcons: 'Simultaneously exporting website icons takes a long time',
+  _errorIcons: 'The following icons cannot be processed properly:',
+  _processing: 'Processing',
+  _weeks: [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ],
+  _shortMonth: ' / ',
+  _shortDay: '',
+  _classNoMatch: 'Classification mismatch, using the default first category',
+  _openSearch: 'Enter link to allow searching',
+  _moveUp: 'Up',
+  _moveDown: 'Down',
+  _footTemplate: 'Template',
+  _footTemplateDesc:
+    'All bottom HTML is universal, copy the obtained template code to the desired theme or global setting, existing variable: ${total} = Number of websites; ${hostname} = Domain name; ${year} = This year; class="applyweb" = Add web',
+  _builtTailwind: `System is already built-in <a href="https://play.tailwindcss.com" target="_blank">https://play.tailwindcss.com</a> You don't need to write`,
+  _quick: 'Quick',
+  _components: 'Components',
+  _calendar: 'Calendar',
+  _submit: 'Submit',
+  _cancel: 'Cancel',
+  _topColor: 'Top background color',
+  _bgColor: 'Background color',
+  _runtime: 'Running time',
+  _runtimeTitle: 'Title',
+  _offWork: 'Off work',
+  _workTitle: 'Work title',
+  _restTitle: 'Rest title',
+  _image: 'Image',
+  _text: 'Text',
+  _countdown: 'Count down',
+  _dateColor: 'Date color',
+  _timeColor: 'Time color',
+  _date: 'Date',
+  _time: 'Time',
+  _workHours: 'Work hours',
+  _breakTime: 'Break time',
+  _holiday: 'Holiday',
 }
 
 export default english

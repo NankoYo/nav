@@ -1,5 +1,5 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 
 import { Component, Input } from '@angular/core'
 import {
@@ -26,10 +26,13 @@ export class SearchEngineComponent {
   currentEngine: ISearchEngineProps = getDefaultSearchEngine()
   SearchType = SearchType
   searchTypeValue = SearchType.All
-  showEngine = false
   keyword = queryString().q
 
   constructor(private router: Router) {}
+
+  get searchList() {
+    return this.searchEngineList.filter((item) => !item.blocked)
+  }
 
   inputFocus() {
     setTimeout(() => {
@@ -39,24 +42,11 @@ export class SearchEngineComponent {
 
   ngAfterViewInit() {
     this.inputFocus()
-
-    document.addEventListener('click', () => {
-      this.toggleEngine(undefined, false)
-    })
-  }
-
-  toggleEngine(e?: Event, isShow?: boolean) {
-    if (this.searchEngineList.length <= 1) return
-
-    if (e) {
-      e.stopPropagation()
-    }
-    this.showEngine = typeof isShow === 'undefined' ? !this.showEngine : isShow
   }
 
   clickEngineItem(index: number) {
-    this.currentEngine = this.searchEngineList[index]
-    this.toggleEngine()
+    document.body.click()
+    this.currentEngine = this.searchList[index]
     this.inputFocus()
     setDefaultSearchEngine(this.currentEngine)
   }

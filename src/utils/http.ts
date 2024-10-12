@@ -1,19 +1,19 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 
 import axios from 'axios'
 import NProgress from 'nprogress'
 import config from '../../nav.config.json'
 import event from './mitt'
+import { settings } from 'src/store'
 import { getToken, getAuthCode } from '../utils/user'
-import { VERSION } from 'src/constants'
 import { isLogin } from 'src/utils/user'
 
 const httpInstance = axios.create({
   timeout: 60000 * 3,
   baseURL:
     config.address ||
-    (config.provider === 'Gitee'
+    (config.gitRepoUrl.includes('gitee.com')
       ? 'https://gitee.com/api/v5'
       : 'https://api.github.com'),
 })
@@ -76,10 +76,11 @@ httpNavInstance.interceptors.request.use(
       code,
       hostname: location.hostname,
       href: location.href,
-      version: VERSION,
       isLogin,
       ...config,
       ...conf.data,
+      email: settings.email,
+      language: settings.language,
     }
     startLoad()
 

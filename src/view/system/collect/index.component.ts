@@ -1,5 +1,5 @@
-// 开源项目MIT，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息，允许商业途径。
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import { Component } from '@angular/core'
@@ -11,6 +11,7 @@ import { websiteList, tagMap } from 'src/store'
 import { setAuthCode, getAuthCode } from 'src/utils/user'
 import { getUserCollect, delUserCollect, updateFileContent } from 'src/api'
 import { DB_PATH } from 'src/constants'
+import { isSelfDevelop } from 'src/utils/util'
 import event from 'src/utils/mitt'
 
 @Component({
@@ -20,7 +21,7 @@ import event from 'src/utils/mitt'
 })
 export default class CollectComponent {
   $t = $t
-  objectKeys = Object.keys
+  isSelfDevelop = isSelfDevelop
   submitting: boolean = false
   isPermission = !!getAuthCode()
   dataList: Array<any> = []
@@ -73,16 +74,24 @@ export default class CollectComponent {
 
   handleConfirmGet(data: any, idx: number) {
     const that = this
+    let oneIndex = 0
+    let twoIndex = 0
+    let threeIndex = 0
     try {
-      const oneIndex = websiteList.findIndex(
+      oneIndex = websiteList.findIndex(
         (item) => item.title === data.extra.oneName
       )
-      const twoIndex = websiteList[oneIndex].nav.findIndex(
+      twoIndex = websiteList[oneIndex].nav.findIndex(
         (item) => item.title === data.extra.twoName
       )
-      const threeIndex = websiteList[oneIndex].nav[twoIndex].nav.findIndex(
+      threeIndex = websiteList[oneIndex].nav[twoIndex].nav.findIndex(
         (item) => item.title === data.extra.threeName
       )
+    } catch (error) {
+      this.notification.error($t('_error'), $t('_classNoMatch'))
+    }
+
+    try {
       event.emit('CREATE_WEB', {
         detail: data,
         oneIndex,
@@ -97,10 +106,7 @@ export default class CollectComponent {
         },
       })
     } catch (error: any) {
-      this.notification.error(
-        `${$t('_error')}`,
-        `收录失败，可能分类位置名称发生改变，请手动删除：${error.message}`
-      )
+      this.notification.error($t('_error'), error.message)
     }
   }
 
