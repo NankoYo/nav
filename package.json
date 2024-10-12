@@ -1,4 +1,15 @@
 {
+
+  "gitRepoUrl": "https://github.com/NankoYo/nav",
+  "provider": "Github",
+  "branch": "main",
+  "hashMode": true,
+  "address": "",
+  "password": "admin",
+  "port": 7777,
+  "email": "",
+  "----------------": "----------------以下字段无需处理--------------------------",
+  "================": "网站所有内容都是可以在后台系统配置的，不懂的不要擅自修改源代码，出现异常请自行处理",
   "name": "nav",
   "version": "8.12.0",
   "author": "xiejiahe",
